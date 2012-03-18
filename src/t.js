@@ -42,7 +42,6 @@
                 clearTimeout(tO);
                 return tO = setTimeout(function(){
                     g = 1;
-                    o = css(elem, prop);
                     css(elem, prop, val);
                     if(fn) tO = setTimeout(function(){
                         fn.call(elem);

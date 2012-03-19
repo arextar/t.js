@@ -58,7 +58,7 @@
             
             stop: function(){
                 clearTimeout(tO);
-                css(elem, prop, t.css(elem, prop));
+                css(elem, prop, css(elem, prop));
                 return r;
             },
             
@@ -95,15 +95,15 @@
                 
                 if(evt === "hover"){
                     on(elem, "mouseover", function(){
-                        r.go(fn);
+                        r.go(cb);
                     });
                     on(elem, "mouseout", function(){
-                       r.revert(fn); 
+                       r.revert(cb); 
                     });
                 }
                 else
                 {
-                    on(elem, evt, function(){noToggle ? r.go(fn) : r.toggle(fn)})
+                    on(elem, evt, function(){noToggle ? r.go(cb) : r.toggle(cb)})
                 }
                 return t;
             },

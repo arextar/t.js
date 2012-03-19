@@ -8,6 +8,8 @@
         }
     }
     
+    function lC(a){return "-" + a.toLowerCase()}
+    function uC(a){return a.substring(1).toUpperCase()}
     
     function d(elem, prop){
         var id;
@@ -30,52 +32,79 @@
         setTimeout(function(){
             st[prefix + "Transition"] = arr + "";
         }, 13);
-        
+        prop = prop.replace(/\-[a-z]/, uC);
         var r, o = css(elem, prop), g = 0, trans = d(elem, "t"), arr = [], l = 0, st = elem.style, tO;
-        d[transforms.hasOwnProperty(prop) ? "-" + prefix_lc + "-transform" : prop] = time;
-        for(var x in d){
-            arr[l++] = x + " " + d[x];
+        trans[transforms.hasOwnProperty(prop) ? "-" + prefix_lc + "-transform" : prop.replace(/[A-Z]/g, lC)] = time;
+        console.log(trans);
+        for(var x in trans){
+            arr[l++] = x + " " + trans[x];
         }
+        
+        time = tm(time);
         
         return r = {
             go: function(fn){
                 clearTimeout(tO);
-                return tO = setTimeout(function(){
+                tO = setTimeout(function(){
                     g = 1;
                     css(elem, prop, val);
                     if(fn) tO = setTimeout(function(){
                         fn.call(elem);
-                    }, tm(time))
-                }, 13)
+                    }, time)
+                }, 13);
+                return r;
             },
             
             stop: function(){
-                    clearTimeout(tO);
+                clearTimeout(tO);
                 css(elem, prop, t.css(elem, prop));
+                return r;
             },
             
-            revert: function(){
-                g = 0;
-                css(elem, prop, o);
+            revert: function(fn){
+                clearTimeout(tO);
+                tO = setTimeout(function(){
+                    g = 0;
+                    css(elem, prop, o);
+                    if(fn) tO = setTimeout(function(){
+                        fn.call(elem);
+                    }, time)
+                }, 13);
+                return r;
             },
             
-            toggle: function(evt){
-              g ? r.revert() : r.go();  
+            toggle: function(fn){
+              return g ? r.revert(fn) : r.go(fn);  
             },
             
-            on: function(evt, noToggle){
+            on: function(evt, noToggle, cb){
+                if(typeof noToggle === "function"){
+                    cb = noToggle;
+                    noToggle = false;
+                }
+                
+                if(/\s/.test(evt)){
+                    evt = evt.split(/\s+/);
+                    for(var i = evt.length;i--;){
+                        r.on(evt[i], noToggle, cb);
+                    }
+                    return r;
+                }
+                
+                
                 if(evt === "hover"){
                     on(elem, "mouseover", function(){
-                        r.go();
+                        r.go(fn);
                     });
                     on(elem, "mouseout", function(){
-                       r.revert(); 
+                       r.revert(fn); 
                     });
                 }
                 else
                 {
-                    on(elem, evt, noToggle ? r.go : r.toggle)
+                    on(elem, evt, function(){noToggle ? r.go(fn) : r.toggle(fn)})
                 }
+                return t;
             },
             
             and: function(other){
@@ -99,7 +128,6 @@
         var is_tr = transforms.hasOwnProperty(prop), tr, str, x;
         if(val != null){
             if(is_tr){
-                // TODO: keep in central object
                 tr = d(elem, "tr");
                 str = "";
                 tr[prop] = val;

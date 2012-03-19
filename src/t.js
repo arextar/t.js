@@ -1,3 +1,4 @@
+// t.js (c) Alex Wilson 2012 (arexkun11@gmail.com)
 ~function(data, transforms, uid, expando){
     "use strict";
     
@@ -158,7 +159,13 @@
     
 }({}, {
     scale: 1,
+    scaleX: 1,
+    scaleY: 1,
+    scaleZ: 1,
     translateX: 0,
     translateY: 0,
-    rotate: 0
+    rotate: 0,
+    rotateX: 0,
+    rotateY: 0,
+    rotateZ: 0
 }, 1, Math.random());

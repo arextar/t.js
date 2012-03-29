@@ -17,13 +17,6 @@
         return data[id = elem[expando] || (elem[expando] = uid++)] || (data[id] = {});
     }
     
-    function proxy(props, fn){
-        for(var i = props.length, ret = {};i--;){
-            ret[props[i]] = fn(props[i]);
-        }
-        return ret;
-    }
-    
     function tm(s){
         if(/\ds$/.test(s)) return parseFloat(s) * 1000;
         return parseInt(s);
@@ -34,9 +27,18 @@
             st[prefix + "Transition"] = arr + "";
         }, 13);
         prop = prop.replace(/\-[a-z]/, uC);
+        
+        // Add units
+        if(/rotate/.test(prop) && !/deg/.test(val)){
+            val += "deg";
+        }
+        else if(!/scale|opacity|columnCount|columns|fontWeight|lineHeight|zIndex|zoom/.test(prop) && typeof val == "number"){
+            val += "px";
+        }
+        
         var r, o = css(elem, prop), g = 0, trans = d(elem, "t"), arr = [], l = 0, st = elem.style, tO;
         trans[transforms.hasOwnProperty(prop) ? "-" + prefix_lc + "-transform" : prop.replace(/[A-Z]/g, lC)] = time;
-        console.log(trans);
+        
         for(var x in trans){
             arr[l++] = x + " " + trans[x];
         }
@@ -106,15 +108,6 @@
                     on(elem, evt, function(){noToggle ? r.go(cb) : r.toggle(cb)})
                 }
                 return t;
-            },
-            
-            and: function(other){
-                return proxy("go0stop0revert0toggle0on".split(0), function(p){
-                    return function(){
-                        r[p].apply(this, arguments);
-                        other[p].apply(this, arguments);
-                    };
-                });
             }
         }
     }

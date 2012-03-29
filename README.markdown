@@ -1,4 +1,4 @@
-# t.js
+# t.js (Beta)
 ### Easy CSS3 transitions in JavaScript
 
 ## Examples:
@@ -31,3 +31,10 @@ t(elem, "rotate", "45deg", "1s").go();
 t(elem, "scale", "2", "1s").on("hover")
 
 ````
+
+## Todo:
+1. Allow more settings
+    * Easing (possibly have plugins for custom easings)
+2. Transitioning multiple properties at once (pass an object of properties)
+3. Allow animation of transformations seperately
+    * Will need to interpolate values and use ease-in/ease-outs
